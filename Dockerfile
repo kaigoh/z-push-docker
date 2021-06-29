@@ -1,31 +1,34 @@
 FROM nginx:alpine
-MAINTAINER Thomas VIAL
+MAINTAINER Dylan WU
 
+ENV MAILSERVER_TIMEZONE=Asia/Shanghai \
+  SERVER_ADDRESS=localhost \
+  MAILSERVER_ADDRESS=localhost \
+  MAILSERVER_PORT=143 \
+  MAILSERVER_PORT_SMTP_SERVER=localhost \
+  MAILSERVER_PORT_SMTP_PORT=587
+  
 WORKDIR /usr/share/nginx
 ADD start-z-push.sh .
 
 RUN apk update && \
-	apk add php5 php5-imap php5-fpm php5-posix php5-pdo && \
+	apk add php7 php7-imap php7-fpm php7-posix php7-pdo php7-mbstring ca-certificates && \
 	rm -rf /var/cache/apk/* && \
-	wget http://download.z-push.org/final/2.3/z-push-2.3.6.tar.gz -O z-push.tar.gz && \
+	wget https://github.com/Z-Hub/Z-Push/archive/refs/tags/2.6.4.beta1.tar.gz -O z-push.tar.gz && \
 	tar xzf z-push.tar.gz && \
-	mv z-push-* z-push && \
+	mv Z-Push-2.6.4.beta1/src z-push && \
 	rm z-push.tar.gz && \
 	mkdir -p /var/log/z-push/ /var/lib/z-push/ && \
 	chmod 770 /var/log/z-push/ /var/lib/z-push/ && \
 	chown -R nginx:nobody z-push/ /var/log/z-push/ /var/lib/z-push/ && \
 	echo "daemon off;" >> /etc/nginx/nginx.conf && \
 	chmod +x start-z-push.sh && \
-	sed -i "s/define('BACKEND_PROVIDER', '')/define('BACKEND_PROVIDER', 'BackendIMAP')/" ./z-push/config.php && \
-	sed -i "s/define('IMAP_FOLDER_CONFIGURED', false)/define('IMAP_FOLDER_CONFIGURED', true)/" ./z-push/backend/imap/config.php && \
-	sed -i "s/define('IMAP_FOLDER_PREFIX', '')/define('IMAP_FOLDER_PREFIX', 'INBOX')/" ./z-push/backend/imap/config.php && \
-	sed -i "s/define('IMAP_SERVER', 'localhost')/define('IMAP_SERVER', getenv('MAILSERVER_ADDRESS'))/" ./z-push/backend/imap/config.php && \
-	sed -i "s/define('IMAP_PORT', 143)/define('IMAP_PORT', getenv('MAILSERVER_PORT'))/" ./z-push/backend/imap/config.php 
+	mv /usr/share/nginx/z-push/config.php /usr/share/nginx/z-push/config.php.dist && \
+	mv /usr/share/nginx/z-push/backend/imap/config.php /usr/share/nginx/z-push/backend/imap/config.php.dist
 
 ADD default.conf /etc/nginx/conf.d/
-ADD php-fpm.conf /etc/php5/
+ADD php-fpm.conf /etc/php7/
 
-ENV MAILSERVER_ADDRESS= 
-ENV MAILSERVER_PORT= 
+EXPOSE 80
 
 CMD "./start-z-push.sh"
