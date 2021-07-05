@@ -11,7 +11,7 @@ sed -e "s/define('IMAP_SERVER', 'localhost')/define('IMAP_SERVER', '"$MAILSERVER
     -e "s|imap_smtp_params = array()|imap_smtp_params = array('host' => '"$MAILSERVER_PORT_SMTP_SERVER"', 'port' => '"$MAILSERVER_PORT_SMTP_PORT"', 'auth' => true, 'username' => 'imap_username', 'password' => 'imap_password', 'verify_peer_name' => false, 'verify_peer' => false, 'allow_self_signed' => true)|" \
     -e "s/define('IMAP_FOLDER_CONFIGURED', false)/define('IMAP_FOLDER_CONFIGURED', true)/" /usr/share/nginx/z-push/backend/imap/config.php.dist > /usr/share/nginx/z-push/backend/imap/config.php
 
-sed -i "s/define('IMAP_FOLDER_PREFIX', '')/define('IMAP_FOLDER_PREFIX', 'INBOX')/" /usr/share/nginx/z-push/backend/imap/config.php
+sed -i "s/define('IMAP_FOLDER_PREFIX', '')/define('IMAP_FOLDER_PREFIX', '"$MAILSERVER_FOLDER_PREFIX"')/" /usr/share/nginx/z-push/backend/imap/config.php
 sed -i "s/server_name  localhost;/server_name  "$SERVER_ADDRESS";/" /etc/nginx/conf.d/default.conf
 
 chmod 777 /var/log/z-push/ /var/lib/z-push/
