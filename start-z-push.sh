@@ -14,7 +14,7 @@ sed -e "s/define('IMAP_SERVER', 'localhost')/define('IMAP_SERVER', '"$MAILSERVER
 sed -i "s/define('IMAP_FOLDER_PREFIX', '')/define('IMAP_FOLDER_PREFIX', 'INBOX')/" /usr/share/nginx/z-push/backend/imap/config.php
 sed -i "s/server_name  localhost;/server_name  "$SERVER_ADDRESS";/" /etc/nginx/conf.d/default.conf
 
-chmod 770 /var/log/z-push/ /var/lib/z-push/
+chmod 777 /var/log/z-push/ /var/lib/z-push/
 chown -R nginx:nobody z-push/ /var/log/z-push/ /var/lib/z-push/
 
 php-fpm7
