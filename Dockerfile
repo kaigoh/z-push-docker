@@ -15,7 +15,7 @@ WORKDIR /usr/share/nginx
 ADD start-z-push.sh .
 
 RUN apk update && \
-	apk add php7 php7-imap php7-fpm php7-posix php7-pdo php7-mbstring php7-iconv php7-openssl ca-certificates && \
+	apk add php7 php7-imap php7-fpm php7-posix php7-pdo php7-mbstring php7-iconv php7-openssl php7-memcached ca-certificates && \
 	rm -rf /var/cache/apk/* && \
 	wget https://github.com/Z-Hub/Z-Push/archive/refs/tags/2.6.4.beta1.tar.gz -O z-push.tar.gz && \
 	tar xzf z-push.tar.gz && \
