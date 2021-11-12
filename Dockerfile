@@ -14,8 +14,11 @@ WORKDIR /usr/share/nginx
 ADD start-z-push.sh .
 
 RUN apk update && \
-	apk add php7 php7-imap php7-curl php7-fpm php7-posix php7-pdo php7-mbstring php7-iconv php7-openssl php7-memcached php7-soap php7-pcntl php7-sysvshm php7-sysvsem ca-certificates && \
+	apk add php7 php7-imap php7-curl php7-fpm php7-posix php7-pdo php7-mbstring php7-iconv php7-openssl php7-memcached php7-soap php7-pcntl php7-sysvshm php7-sysvsem php7-dom php7-xml php7-xmlreader php7-xmlwriter php7-simplexml php7-xsl ca-certificates && \
 	rm -rf /var/cache/apk/* && \
+	wget https://www.davical.org/downloads/awl_0.62.orig.tar.xz && \
+	mkdir -p /usr/share/awl && \
+	tar xf awl_0.62.orig.tar.xz -C /usr/share/awl && \
 	wget https://github.com/Z-Hub/Z-Push/archive/refs/tags/2.6.4.beta1.tar.gz -O z-push.tar.gz && \
 	tar xzf z-push.tar.gz && \
 	mv Z-Push-2.6.4.beta1/src z-push && \
