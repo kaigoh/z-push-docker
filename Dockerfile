@@ -1,13 +1,12 @@
 FROM nginx:alpine
-MAINTAINER Dylan WU
 
-ENV MAILSERVER_TIMEZONE=Asia/Shanghai \
+ENV MAILSERVER_TIMEZONE=Europe/London \
   SERVER_ADDRESS=localhost \
   MAILSERVER_FOLDER_PREFIX= \
   MAILSERVER_ADDRESS=localhost \
   MAILSERVER_PORT=143 \
-  MAILSERVER_PORT_SMTP_SERVER=localhost \
-  MAILSERVER_PORT_SMTP_PORT=587 \
+  SMTPSERVER_ADDRESS=localhost \
+  SMTPSERVER_PORT=587 \
   MAILSERVER_PROTOCOL=tcp:// \
   MAILSERVER_IMAP_OPTION=ssl
   
@@ -21,6 +20,7 @@ RUN apk update && \
 	tar xzf z-push.tar.gz && \
 	mv Z-Push-2.6.4.beta1/src z-push && \
 	rm z-push.tar.gz && \
+	rm Z-Push-2.6.4.beta1 && \
 	mkdir -p /var/log/z-push/ /var/lib/z-push/ && \
 	chmod 777 /var/log/z-push/ /var/lib/z-push/ && \
 	chown -R nginx:nobody z-push/ /var/log/z-push/ /var/lib/z-push/ && \
