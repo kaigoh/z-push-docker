@@ -20,7 +20,7 @@ RUN apk update && \
 	tar xzf z-push.tar.gz && \
 	mv Z-Push-2.6.4.beta1/src z-push && \
 	rm z-push.tar.gz && \
-	rm Z-Push-2.6.4.beta1 && \
+	rm -rf Z-Push-2.6.4.beta1 && \
 	mkdir -p /var/log/z-push/ /var/lib/z-push/ && \
 	chmod 777 /var/log/z-push/ /var/lib/z-push/ && \
 	chown -R nginx:nobody z-push/ /var/log/z-push/ /var/lib/z-push/ && \
