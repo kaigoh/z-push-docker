@@ -1,20 +1,48 @@
 FROM nginx:alpine
 
-ENV MAILSERVER_TIMEZONE=Europe/London \
-  SERVER_ADDRESS=localhost \
-  MAILSERVER_FOLDER_PREFIX= \
-  MAILSERVER_ADDRESS=localhost \
-  MAILSERVER_PORT=143 \
-  SMTPSERVER_ADDRESS=localhost \
-  SMTPSERVER_PORT=587 \
-  MAILSERVER_PROTOCOL=tcp:// \
-  MAILSERVER_IMAP_OPTION=ssl
+# Set the timezone
+ENV TZ=Europe/London
+
+# IMAP Variables
+ENV IMAP_SERVER=localhost
+ENV IMAP_PORT=143
+ENV IMAP_OPTIONS='/ssl/norsh/novalidate-cert'
+ENV IMAP_FOLDER_PREFIX=''
+ENV IMAP_FOLDER_INBOX=INBOX
+ENV IMAP_FOLDER_SENT=Sent
+ENV IMAP_FOLDER_DRAFT=Drafts
+ENV IMAP_FOLDER_TRASH=Trash
+ENV IMAP_FOLDER_JUNK=Junk
+ENV IMAP_FOLDER_ARCHIVE=Archive
+
+# SMTP Variables
+ENV SMTP_SERVER=localhost
+ENV SMTP_PORT=25
+ENV SMTP_USERNAME='imap_username'
+ENV SMTP_PASSWORD='imap_password'
+
+# CalDAV Variables
+ENV CALDAV_PROTOCOL=https
+ENV CALDAV_SERVER=localhost
+ENV CALDAV_PORT=80
+ENV CALDAV_PATH=/remote.php/dav/calendars/%u/
+ENV CALDAV_PERSONAL=personal
+
+# CardDAV Variables
+ENV CARDDAV_PROTOCOL=https
+ENV CARDDAV_SERVER=localhost
+ENV CARDDAV_PORT=80
+ENV CARDDAV_PATH='/remote.php/dav/addressbooks/users/%u/'
+ENV CARDDAV_DEFAULT_PATH='/remote.php/dav/addressbooks/users/%u/contacts/'
+ENV CARDDAV_GAL_PATH='/caldav.php/%d/GAL/'
+ENV CARDDAV_GAL_MIN_LENGTH=5
+ENV CARDDAV_CONTACTS_FOLDER_NAME='%u Addressbook'
   
 WORKDIR /usr/share/nginx
 ADD start-z-push.sh .
 
 RUN apk update && \
-	apk add php7 php7-imap php7-curl php7-fpm php7-posix php7-pdo php7-mbstring php7-iconv php7-openssl php7-memcached php7-soap php7-pcntl php7-sysvshm php7-sysvsem php7-dom php7-xml php7-xmlreader php7-xmlwriter php7-simplexml php7-xsl ca-certificates && \
+	apk add bash php7 php7-imap php7-curl php7-fpm php7-posix php7-pdo php7-mbstring php7-iconv php7-openssl php7-memcached php7-soap php7-pcntl php7-sysvshm php7-sysvsem php7-dom php7-xml php7-xmlreader php7-xmlwriter php7-simplexml php7-xsl ca-certificates && \
 	rm -rf /var/cache/apk/* && \
 	wget https://www.davical.org/downloads/awl_0.62.orig.tar.xz && \
 	mkdir -p /usr/share/awl && \
@@ -32,8 +60,13 @@ RUN apk update && \
 	mv /usr/share/nginx/z-push/config.php /usr/share/nginx/z-push/config.php.dist && \
 	mv /usr/share/nginx/z-push/backend/imap/config.php /usr/share/nginx/z-push/backend/imap/config.php.dist
 
-ADD default.conf /etc/nginx/conf.d/
-ADD php-fpm.conf /etc/php7/
+RUN mkdir -p /config
+
+ADD config/. /config
+
+VOLUME [ "/config" ]
+
+ADD docker_config_loader.php /var/lib/z-push/
 
 EXPOSE 80
 
