@@ -39,7 +39,7 @@ define('CALDAV_SERVER', ($_ENV['CALDAV_SERVER'] ? $_ENV['CALDAV_SERVER'] : null)
 define('CALDAV_PORT', ($_ENV['CALDAV_PORT'] ? $_ENV['CALDAV_PORT'] : null));
 
 // Base URL to principals calendar collection: use '%l' for local part or '%u' for full username
-define('CALDAV_PATH', ($_ENV['CALDAV_PROTOCOL'] ? $_ENV['CALDAV_PROTOCOL'] : null));
+define('CALDAV_PATH', ($_ENV['CALDAV_PATH'] ? $_ENV['CALDAV_PATH'] : null));
 
 // Default CalDAV folder (calendar folder/principal). This will be marked as the default calendar in the mobile
 define('CALDAV_PERSONAL', ($_ENV['CALDAV_PERSONAL'] ? $_ENV['CALDAV_PERSONAL'] : null));
