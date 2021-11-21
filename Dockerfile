@@ -37,7 +37,15 @@ ENV CARDDAV_DEFAULT_PATH='/remote.php/dav/addressbooks/users/%u/contacts/'
 ENV CARDDAV_GAL_PATH='/caldav.php/%d/GAL/'
 ENV CARDDAV_GAL_MIN_LENGTH=5
 ENV CARDDAV_CONTACTS_FOLDER_NAME='%u Addressbook'
-  
+
+# SQL Statemachine Variables
+ENV STATE_SQL_ENGINE=mysql
+ENV STATE_SQL_SERVER=localhost
+ENV STATE_SQL_PORT=3306
+ENV STATE_SQL_DATABASE=zpush
+ENV STATE_SQL_USER=root
+ENV STATE_SQL_PASSWORD=
+
 WORKDIR /usr/share/nginx
 ADD start-z-push.sh .
 
@@ -61,12 +69,13 @@ RUN apk update && \
 	mv /usr/share/nginx/z-push/backend/imap/config.php /usr/share/nginx/z-push/backend/imap/config.php.dist
 
 RUN mkdir -p /config
+RUN mkdir -p /opt/z-push
 
 ADD config/. /config
 
-VOLUME [ "/config" ]
+VOLUME [ "/config", "/var/lib/z-push/" ]
 
-ADD docker_config_loader.php /var/lib/z-push/
+ADD docker_config_loader.php /opt/z-push/
 
 EXPOSE 80
 

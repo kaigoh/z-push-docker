@@ -13,7 +13,7 @@ then
 fi
 
 # Copy over the Z-Push configs...
-php /var/lib/z-push/docker_config_loader.php
+php /opt/z-push/docker_config_loader.php
 
 chmod 777 -R /var/log/z-push/ /var/lib/z-push/
 chown -R nginx:nobody z-push/ /var/log/z-push/ /var/lib/z-push/
